@@ -45,3 +45,32 @@ class MyCircle extends MyAreaPrimitive2D {
     };
   }
 }
+
+class MyRectangle extends MyAreaPrimitive2D {
+  public rectangle: Rectangle;
+  constructor(topLeft: Point, bottomRight: Point) {
+    super();
+    this.rectangle = {
+      topLeft,
+      bottomRight,
+    };
+
+    this.boundingRect = this.rectangle;
+  }
+
+  public area(): number {
+    return (
+      (this.rectangle.bottomRight.x - this.rectangle.topLeft.x) *
+      (this.rectangle.bottomRight.y - this.rectangle.topLeft.y)
+    );
+  }
+
+  public move(offset: Point): void {
+    this.rectangle = {
+      topLeft: offsetPoint(this.rectangle.topLeft, offset),
+      bottomRight: offsetPoint(this.rectangle.bottomRight, offset),
+    };
+
+    this.boundingRect = this.rectangle;
+  }
+}
