@@ -5,7 +5,7 @@ function offsetPoint(point: Point, offset: Point): Point {
 type Rectangle = { topLeft: Point; bottomRight: Point };
 
 abstract class MyGraphicsPrimitive2D {
-  public boundingRect: Rectangle;
+  public abstract get boundingRect(): Rectangle;
   public abstract move(offset: Point): void;
 }
 
@@ -21,16 +21,18 @@ class MyCircle extends MyAreaPrimitive2D {
     super();
     this.center = center;
     this.radius = radius;
-    const topLeft = offsetPoint(center, {
-      x: -radius,
-      y: -radius,
-    });
-    const bottomRight = offsetPoint(center, {
-      x: radius,
-      y: radius,
-    });
+  }
 
-    this.boundingRect = { topLeft, bottomRight };
+  public get boundingRect(): Rectangle {
+    const topLeft = offsetPoint(this.center, {
+      x: -this.radius,
+      y: -this.radius,
+    });
+    const bottomRight = offsetPoint(this.center, {
+      x: this.radius,
+      y: this.radius,
+    });
+    return { topLeft, bottomRight };
   }
 
   public area(): number {
@@ -39,10 +41,6 @@ class MyCircle extends MyAreaPrimitive2D {
 
   public move(offset: Point): void {
     this.center = offsetPoint(this.center, offset);
-    this.boundingRect = {
-      topLeft: offsetPoint(this.boundingRect.topLeft, offset),
-      bottomRight: offsetPoint(this.boundingRect.bottomRight, offset),
-    };
   }
 }
 
@@ -54,8 +52,6 @@ class MyRectangle extends MyAreaPrimitive2D {
       topLeft,
       bottomRight,
     };
-
-    this.boundingRect = this.rectangle;
   }
 
   public area(): number {
@@ -70,7 +66,9 @@ class MyRectangle extends MyAreaPrimitive2D {
       topLeft: offsetPoint(this.rectangle.topLeft, offset),
       bottomRight: offsetPoint(this.rectangle.bottomRight, offset),
     };
+  }
 
-    this.boundingRect = this.rectangle;
+  public get boundingRect(): Rectangle {
+    return this.rectangle;
   }
 }
